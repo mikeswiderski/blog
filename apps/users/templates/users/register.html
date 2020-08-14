@@ -10,13 +10,13 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-8">
-          <h1 class="mt-2">Log In</h1>
+          <h1 class="mt-2">Register</h1>
           <hr class="mt-0 mb-4">
           <form method="post">
               {% csrf_token %}
               {{ form|crispy }}
-              <button type="submit" class="btn btn-success">Log In</button>
-              <input type="hidden" name="next" value="{{ next }}">
+              <button type="submit" class="btn btn-success">Sign Up</button>
+              <!--input type="hidden" name="next" value="{{ next }}"-->
             </form>
         </div>
       </div>
