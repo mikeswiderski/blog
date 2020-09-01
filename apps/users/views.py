@@ -8,9 +8,10 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             new_user = form.save()
-            new_user = authenticate(username=form.cleaned_data['username'],
-                                    password=form.cleaned_data['password1'],
-                                    )
+            new_user = authenticate(
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password1'],
+            )
             login(request, new_user)
             return redirect('dashboard-home')
     else:

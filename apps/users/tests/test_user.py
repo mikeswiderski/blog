@@ -5,98 +5,98 @@ from apps.users.models import User
  
 class BaseTest(TestCase):
     def setUp(self):
-        self.client=Client()
-        self.register_url=reverse('register')
-        self.login_url=reverse('login')
-        self.user={
-            'username':'testusername', 
-            'email':'testemail@gmail.com', 
-            'password1':'testpassword', 
-            'password2':'testpassword'
+        self.client = Client()
+        self.register_url = reverse('register')
+        self.login_url = reverse('login')
+        self.user = {
+            'username': 'testusername', 
+            'email': 'testemail@gmail.com', 
+            'password1': 'testpassword', 
+            'password2': 'testpassword'
         }
         return super().setUp() 
 
 class RegisterTest(BaseTest):
 
     def test_can_register_user(self):
-        response=self.client.post(self.register_url,self.user,format='text/html')
+        response = self.client.post(self.register_url, self.user, format='text/html')
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.is_active, True)
  
     def test_password_no_match(self):
         user_credentials = {
-            'username':'testuser', 
-            'email':'test@gmail.com', 
-            'password1':'testpassword1', 
-            'password2':'testpassword',
+            'username': 'testuser', 
+            'email': 'test@gmail.com', 
+            'password1': 'testpassword1', 
+            'password2': 'testpassword',
         }
-        response=self.client.post(self.register_url,user_credentials,format='text/html')
+        response = self.client.post(self.register_url,user_credentials,format='text/html')
         self.assertRaisesMessage(ValueError, "The two password fields didn't match.")
         self.assertEqual(User.objects.count(), 0)
 
     def test_register_no_password(self):
         user_credentials = {
-            'username':'testuser', 
-            'email':'test@gmail.com', 
-            'password1':'', 
-            'password2':'',
+            'username': 'testuser', 
+            'email': 'test@gmail.com', 
+            'password1': '', 
+            'password2': '',
         }
-        response=self.client.post(self.register_url,user_credentials,format='text/html')
+        response = self.client.post(self.register_url, user_credentials, format='text/html')
         self.assertEqual(User.objects.count(), 0)
 
     def test_register_no_email(self):
         user_credentials = {
-            'username':'testuser', 
-            'email':'', 
-            'password1':'testpassword', 
-            'password2':'testpassword',
+            'username': 'testuser', 
+            'email': '', 
+            'password1': 'testpassword', 
+            'password2': 'testpassword',
         }
-        response=self.client.post(self.register_url,user_credentials,format='text/html')
+        response = self.client.post(self.register_url, user_credentials, format='text/html')
         self.assertEqual(User.objects.count(), 0)
 
     def test_register_no_usernme(self):
         user_credentials = {
-            'username':'', 
-            'email':'test@gmail.com', 
-            'password1':'testpassword', 
-            'password2':'testpassword',
+            'username': '', 
+            'email': 'test@gmail.com', 
+            'password1': 'testpassword', 
+            'password2': 'testpassword',
         }
-        response=self.client.post(self.register_url,user_credentials,format='text/html')
+        response = self.client.post(self.register_url, user_credentials, format='text/html')
         self.assertEqual(User.objects.count(), 0)
         
     def test_user_same_username(self):
         user_credentials = {
-            'username':'testusername', 
-            'email':'test@gmail.com', 
-            'password':'testpassword', 
+            'username': 'testusername', 
+            'email': 'test@gmail.com', 
+            'password': 'testpassword', 
         }
         user = User.objects.create_user(**user_credentials)
         self.assertEqual(User.objects.count(), 1)
-        response=self.client.post(self.register_url,self.user,format='text/html')
+        response = self.client.post(self.register_url, self.user, format='text/html')
         self.assertRaisesMessage(ValueError, "A user with that username already exists.")
         self.assertEqual(User.objects.count(), 1)
         
     def test_user_same_email(self):
         user_credentials = {
-            'username':'differentusername', 
-            'email':'testemail@gmail.com', 
-            'password':'testpassword', 
+            'username': 'differentusername', 
+            'email': 'testemail@gmail.com', 
+            'password': 'testpassword', 
         }
         user = User.objects.create_user(**user_credentials)
         self.assertEqual(User.objects.count(), 1)
-        response=self.client.post(self.register_url,self.user,format='text/html')
+        response = self.client.post(self.register_url, self.user, format='text/html')
         self.assertRaisesMessage(ValueError, "This email has already been used. Please use another email.")
         self.assertEqual(User.objects.count(), 1)
 
     def test_user_same_password(self):
         user_credentials = {
-            'username':'differentusername', 
-            'email':'differentemail@gmail.com', 
-            'password':'testpassword', 
+            'username': 'differentusername', 
+            'email': 'differentemail@gmail.com', 
+            'password': 'testpassword', 
         }
         user = User.objects.create_user(**user_credentials)
         self.assertEqual(User.objects.count(), 1)
-        response=self.client.post(self.register_url,self.user,format='text/html')
+        response = self.client.post(self.register_url, self.user, format='text/html')
         self.assertEqual(User.objects.count(), 2)
 
   
@@ -108,12 +108,12 @@ class LoginTest(BaseTest):
             "password": "testpassword",
         }
         user = User.objects.create_user(**user_credentials)
-        user.is_active=True
+        user.is_active = True
         user.save()
-        response=self.client.post(self.login_url,user_credentials,format='text/html')
-        self.assertEqual(response.status_code,302)
+        response = self.client.post(self.login_url, user_credentials, format='text/html')
+        self.assertEqual(response.status_code, 302)
         session = self.client.session
-        self.assertEqual(int(session.get('_auth_user_id')),user.id)
+        self.assertEqual(int(session.get('_auth_user_id')), user.id)
 
     def test_login_one_required_field_missing(self):
         user_credentials = {
@@ -125,31 +125,27 @@ class LoginTest(BaseTest):
             "password": "",
         }
         user = User.objects.create_user(**user_credentials)
-        user.is_active=True
+        user.is_active = True
         user.save()
-        response=self.client.post(self.login_url,user_credentials2,format='text/html')
+        response = self.client.post(self.login_url, user_credentials2, format='text/html')
         self.assertRaisesMessage(ValueError, "Please enter a correct username and password. Note that both fields may be case-sensitive.")
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
         session = self.client.session
-        self.assertEqual((session.get('_auth_user_id')),None)
+        self.assertEqual((session.get('_auth_user_id')), None)
         
     def test_login_inactive_user(self):
         user_credentials = {
             "username": "testusername", 
             "password": "testpassword",
         }
-        user_credentials2 = {
-            "username": "testusername", 
-            "password": "testpassword",
-        }
         user = User.objects.create_user(**user_credentials)
-        user.is_active=False
+        user.is_active = False
         user.save()
-        response=self.client.post(self.login_url,user_credentials2,format='text/html')
+        response = self.client.post(self.login_url, user_credentials, format='text/html')
         self.assertRaisesMessage(ValueError, "Please enter a correct username and password. Note that both fields may be case-sensitive.")
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
         session = self.client.session
-        self.assertEqual((session.get('_auth_user_id')),None)
+        self.assertEqual((session.get('_auth_user_id')), None)
 
     def test_login_user_invalid_password(self):
         user_credentials = {
@@ -161,13 +157,13 @@ class LoginTest(BaseTest):
             "password": "invalidpassword",
         }
         user = User.objects.create_user(**user_credentials)
-        user.is_active=True
+        user.is_active = True
         user.save()
-        response=self.client.post(self.login_url,user_credentials2,format='text/html')
+        response = self.client.post(self.login_url, user_credentials2, format='text/html')
         self.assertRaisesMessage(ValueError, "Please enter a correct username and password. Note that both fields may be case-sensitive.")
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
         session = self.client.session
-        self.assertEqual((session.get('_auth_user_id')),None)
+        self.assertEqual((session.get('_auth_user_id')), None)
 
     def test_login_user_does_not_exist(self):
         user_credentials = {
@@ -179,10 +175,10 @@ class LoginTest(BaseTest):
             "password": "testpassword",
         }
         user = User.objects.create_user(**user_credentials)
-        user.is_active=True
+        user.is_active = True
         user.save()
-        response=self.client.post(self.login_url,user_credentials2,format='text/html')
+        response = self.client.post(self.login_url, user_credentials2, format='text/html')
         self.assertRaisesMessage(ValueError, "Please enter a correct username and password. Note that both fields may be case-sensitive.")
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code, 200)
         session = self.client.session
-        self.assertEqual((session.get('_auth_user_id')),None)
+        self.assertEqual((session.get('_auth_user_id')), None)
