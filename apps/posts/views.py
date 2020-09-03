@@ -1,8 +1,11 @@
 from django.contrib.auth.decorators import login_required 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from .forms import PostModelForm
 from .models import Post
+from django.urls import reverse, reverse_lazy
 
+
+login = reverse_lazy('login')
 
 def post_detail_view(request, post_id):
     obj = get_object_or_404(Post, id=post_id)
@@ -10,14 +13,34 @@ def post_detail_view(request, post_id):
     context = {"object": obj}
     return render(request, template_name, context)
 
-@login_required(login_url='/login')
+
+@login_required(login_url=login)         #1
 def post_create_view(request):
-    form = PostModelForm(request.POST or None)
+    if request.method == 'POST':
+        form = PostModelForm(request.POST)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.author = request.user
+            obj.save()
+            return redirect(reverse('post-detail', kwargs={'post_id': obj.id}))
+    else:   
+        form = PostModelForm()
+
+    template_name = 'posts/post_create.html'
+    context = {'form': form}
+    return render(request, template_name, context) 
+
+'''
+@login_required(login_url=login)           #2
+def post_create_view(request):
+ 
+    form = PostModelForm(request.POST or None)     #if I put 'form = PostModelForm(request.POST)' here, it displays form with validation errors.? Which 'post_create_view' is better to use? 1 or 2?
     if form.is_valid():
         obj = form.save(commit=False)
         obj.author = request.user
         obj.save()
-        form = PostModelForm()
+        return redirect(reverse('post-detail', kwargs={'post_id': obj.id}))
+    
     template_name = 'posts/post_create.html'
     context = {'form': form}
-    return render(request, template_name, context)
+    return render(request, template_name, context) '''

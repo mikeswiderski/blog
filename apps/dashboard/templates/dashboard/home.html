@@ -39,38 +39,40 @@
     </div>
   </div>
 
-
-
   <div class="row">
     <div class="col-md-8 blog-main">
       <h3 class="pb-4 mb-4 font-italic border-bottom">
         From the Firehose
       </h3>
-
-      {% for post in posts %}
-      <div class="blog-post">
-        <h2 class="blog-post-title"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-        <p class="blog-post-meta"> By <a href="#">{{ post.author }}</a></p>
-
-        <p>{{ post.body }}</p>
-      </div>
-      {% endfor %}
-      <!--div class="blog-post">
-        <h2 class="blog-post-title">Another blog post</h2>
-        <p class="blog-post-meta">December 23, 2013 by <a href="#">Jacob</a></p>
-
-        <p>Cum sociis natoque penatibus et magnis <a href="#">dis parturient montes</a>, nascetur ridiculus mus. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Sed posuere consectetur est at lobortis. Cras mattis consectetur purus sit amet fermentum.</p>
-        <blockquote>
-          <p>Curabitur blandit tempus porttitor. <strong>Nullam quis risus eget urna mollis</strong> ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-        </blockquote>
-        <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
-        <p>Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.</p>
-      </div>-->
-
-      <nav class="blog-pagination">
-        <a class="btn btn-outline-primary" href="#">Older</a>
-        <a class="btn btn-outline-secondary disabled" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-      </nav>
+      {% if posts %}  
+        {% for post in posts %}
+          <div class="blog-post">
+            <h2 class="blog-post-title"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
+            <p class="blog-post-meta"> By <a href="#">{{ post.author }}</a></p>
+            <p>{{ post.body }}</p>
+          </div>
+        {% endfor %}
+        <div class="pagination">
+          <span class="step-links">
+              {% if posts.has_previous %}
+                  <a href="?page=1">&laquo; first</a>
+                  <a href="?page={{ posts.previous_page_number }}">previous</a>
+              {% endif %}
+      
+              <span class="current">
+                  Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
+              </span>
+      
+              {% if posts.has_next %}
+                  <a href="?page={{ posts.next_page_number }}">next</a>
+                  <a href="?page={{ posts.paginator.num_pages }}">last &raquo;</a>
+              {% endif %}
+          </span>
+        </div>
+      {% else %}
+        <div class="blog-post">
+          <h2 class="blog-post-title"><a> No posts yet. Add a first post. </a></h2>
+      {% endif %}
 
     </div><!-- /.blog-main -->
 
