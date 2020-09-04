@@ -14,7 +14,7 @@ def post_detail_view(request, post_id):
     return render(request, template_name, context)
 
 
-@login_required(login_url=login)         #1
+@login_required(login_url=login)         
 def post_create_view(request):
     if request.method == 'POST':
         form = PostModelForm(request.POST)
@@ -29,18 +29,3 @@ def post_create_view(request):
     template_name = 'posts/post_create.html'
     context = {'form': form}
     return render(request, template_name, context) 
-
-'''
-@login_required(login_url=login)           #2
-def post_create_view(request):
- 
-    form = PostModelForm(request.POST or None)     #if I put 'form = PostModelForm(request.POST)' here, it displays form with validation errors.? Which 'post_create_view' is better to use? 1 or 2?
-    if form.is_valid():
-        obj = form.save(commit=False)
-        obj.author = request.user
-        obj.save()
-        return redirect(reverse('post-detail', kwargs={'post_id': obj.id}))
-    
-    template_name = 'posts/post_create.html'
-    context = {'form': form}
-    return render(request, template_name, context) '''
