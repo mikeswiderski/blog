@@ -2,5 +2,5 @@ venv/*
 *.pyc
 *.vscode
 *.sqlite3
-.coverage
+*.coverage
 htmlcov/
