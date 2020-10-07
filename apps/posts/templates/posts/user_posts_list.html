@@ -1,0 +1,15 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+
+{% if objects %}
+    {% for obj in objects %}
+        <h1>{{ obj.title }}</h1> 
+        <p>By {{ obj.author }}</p>
+        <p>{{ obj.body }}</p>
+        <p>{{ obj.status }}</p>
+        <a class="text-muted" href="{% url 'post-update' obj.id %}">Update Post</a>
+    {% endfor %}
+{% else %}
+        You don't have any posts.
+{% endif %}
+{% endblock content %}
