@@ -12,20 +12,18 @@ class PostModelForm(ModelForm):
             'title',
             'body',
             'tags'
-          ]
+        ]
 
-
-def save(self, commit=True, *args, **kwargs):
-    instance = super().save(commit=False, *args, **kwargs)
-    tags = self.cleaned_data.get('tags')
-    tags_l = [tag.strip() for tag in tags.split(',') if tags]
-    final_ids = []
-    for tag in tags_l:
-        obj, created = Tag.objects.get_or_create(label=tag)
-        final_ids.append(obj.id)
-    qs = Tag.objects.filter(id__in=final_ids).distinct()
-    if commit:
-        instance.tags.clear()
-        instance.tags.add(qs)
-        instance.save()
-    return instance 
+    def save(self, commit=True, *args, **kwargs):
+        instance = super().save(commit=False, *args, **kwargs)
+        tags = self.cleaned_data.get('tags')
+        tags_l = [tag.strip() for tag in tags.split(',') if tags]
+        tag_list = []
+        for tag in tags_l:
+            obj, created = Tag.objects.get_or_create(label=tag)
+            tag_list.append(obj)
+        if commit:
+            for tag in tag_list:
+                instance.tags.add(tag)
+            instance.save()
+        return instance      
