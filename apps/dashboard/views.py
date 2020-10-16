@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from apps.posts.models import Post
+from apps.comments.models import Comment
 from django.core.paginator import Paginator
 
 
@@ -10,6 +11,7 @@ def home(request):
     posts = paginator.get_page(page)
     template_name = 'dashboard/home.html'
     context = {
-        'posts': posts 
+        'posts': posts, 
+        
     }
     return render(request, template_name, context)

@@ -50,8 +50,19 @@
             <h2 class="blog-post-title"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
             <p class="blog-post-meta"> By <a href="#">{{ post.author }}</a></p>
             <p>{{ post.body }}</p>
+            <br/>
+            {% if not post.comments.all %}
+              <p>No Comments Yet...<a href="{% url 'comment-create' post.id %}">Add one</a></p>
+              <br/><br/><br/>
+            {% else %}
+              Comments: {{ post.comments.count }}
+              <br/><br/>
+              <a href="{% url 'comment-create' post.id %}">Comment</a>
+              <br/><br/><br/>
+            {% endif %}
           </div>
         {% endfor %}
+        <br/><br/><br/>
         <div class="pagination">
           <span class="step-links">
               {% if posts.has_previous %}

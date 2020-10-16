@@ -3,7 +3,20 @@
 
 <h1>{{ object.title }}</h1>
 <p>By {{ object.author }}</p>
-
 <p>{{ object.body }}</p>
+<br/><br/>
+{% if object.comments.all %}
+    Comments:
+    <br/><br/>
+    {% for comment in object.comments.all %}
+        <strong>
+            {{ comment.author }} -
+            {{ comment.date_added }}
+        </strong>
+        <br/>
+        {{ comment.body }}
+        <br/>
+    {% endfor %}
+{% endif %}
 
 {% endblock content %}

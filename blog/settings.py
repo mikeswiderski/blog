@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.dashboard',
     'apps.posts',
+    'apps.comments',
     'crispy_forms',
 ]
 
