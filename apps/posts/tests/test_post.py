@@ -13,7 +13,8 @@ class BaseTest(TestCase):
         self.post_create_url = reverse('post-create')
         self.post = {
             'title': 'Testtitle', 
-            'body': 'TestBody',      
+            'body': 'TestBody', 
+            'tags': 'test1,test2,test3',     
         }
         return super().setUp() 
 
@@ -24,7 +25,7 @@ class PostCreationTest(BaseTest):
         self.client.login(username=self.username, password=self.password)
         response = self.client.post(self.post_create_url, self.post, format='text/html')
         self.assertEqual(Post.objects.count(), 1)
-
+        
     def test_create_redirects_after_form_success(self):
         self.client.force_login
         response = self.client.post(self.post_create_url, self.post, format='text/html')
@@ -35,6 +36,12 @@ class PostCreationTest(BaseTest):
         response = self.client.post(self.post_create_url, self.post, format='text/html')
         obj = Post.objects.all().first()
         self.assertEqual(obj.author.id, self.user.id)
+
+    def test_can_create_tags(self):
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(self.post_create_url, self.post, format='text/html')
+        obj = Post.objects.all().first()
+        self.assertEqual(obj.tags.count(), 3)
 
     def test_invalid_entry_create(self):
         self.client.login(username=self.username, password=self.password)
