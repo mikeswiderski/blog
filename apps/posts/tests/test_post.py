@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from apps.posts.models import Post
 from apps.users.models import User
+from apps.tags.models import Tag
 
 
 class BaseTest(TestCase):
@@ -42,6 +43,19 @@ class PostCreationTest(BaseTest):
         response = self.client.post(self.post_create_url, self.post, format='text/html')
         obj = Post.objects.all().first()
         self.assertEqual(obj.tags.count(), 3)
+
+    def test_invalid_tag_entry_create(self):
+        self.client.login(username=self.username, password=self.password)
+        post_data = {
+            'title': 'Testtitle',
+            'body': 'TestBody',
+            'tags': 'test1,test2,test3%',    
+        }
+        response = self.client.post(self.post_create_url, post_data, format='text/html')
+        self.assertEqual(Post.objects.count(), 0)
+        self.assertEqual(Tag.objects.count(), 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, "form", "tags", 'Letters, digits, space, dash only.')
 
     def test_invalid_entry_create(self):
         self.client.login(username=self.username, password=self.password)
