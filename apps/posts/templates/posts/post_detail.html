@@ -8,7 +8,7 @@
 {% if object.comments.all %}
     Comments:
     <br/><br/>
-    {% for comment in object.comments.all %}
+    {% for comment in object.comments.all|slice:":10" %}
         <strong>
             {{ comment.author }} -
             {{ comment.date_added }}
@@ -17,6 +17,8 @@
         {{ comment.body }}
         <br/>
     {% endfor %}
+    <br/><br/>
+    <a href="{% url 'comment-all' object.id %}"> See all Comments </a>
 {% endif %}
 
 {% endblock content %}
