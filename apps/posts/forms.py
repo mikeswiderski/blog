@@ -5,7 +5,7 @@ from .models import Post
 class PostModelForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PostModelForm, self).__init__(*args, **kwargs)
-        if self.instance.status == 'PUBLISHED':
+        if self.instance.status == Post.PUBLISHED:
             self.fields.pop('status')
 
     class Meta:

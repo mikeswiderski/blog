@@ -86,12 +86,25 @@ class PostUserListTest(BaseTest):
 
 
 class PostUpdateTest(BaseTest):
+
+    def test_user_cant_update_someone_elses_post(self):
+        self.client.login(username=self.username, password=self.password)
+        self.client.post(self.post_create_url, self.post, format='text/html')
+        self.client.logout()
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first() 
+        self.client.login(username='testuser2', password='testpassword2')
+        response = self.client.post(reverse('post-update', kwargs={'post_id': obj.id}), self.post2, format='text\html')  
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first()
+        self.assertEqual(obj.title, 'Testtitle')
+        self.assertEqual(obj.status, 'DRAFT')
     
     def test_post_updates(self):
         self.client.login(username=self.username, password=self.password)
         self.client.post(self.post_create_url, self.post, format='text/html')
         self.assertEqual(Post.objects.count(), 1)
-        obj = Post.objects.all().first()
+        obj = Post.objects.all().first() 
         response = self.client.post(reverse('post-update', kwargs={'post_id': obj.id}), self.post2, format='text\html')
         self.assertEqual(Post.objects.count(), 1)
         obj = Post.objects.all().first()
