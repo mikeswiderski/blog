@@ -13,9 +13,16 @@ class BaseTest(TestCase):
         self.post_create_url = reverse('post-create')
         self.post = {
             'title': 'Testtitle', 
-            'body': 'TestBody',      
+            'body': 'TestBody', 
+            'status': 'DRAFT',
+        }
+        self.post2 = {
+            'title': 'Testtitle2', 
+            'body': 'TestBody2', 
+            'status': 'PUBLISHED', 
         }
         return super().setUp() 
+        
 
 class PostCreationTest(BaseTest):
 
@@ -62,9 +69,55 @@ class PostDetailTest(BaseTest):
         self.assertEqual(response.status_code, 404)  
 
     def test_detail_view(self):
-
         self.client.login(username=self.username, password=self.password)
         response = self.client.post(self.post_create_url, self.post, format='text/html')
         obj = Post.objects.all().first()
         response = self.client.get(reverse('post-detail', kwargs={'post_id': obj.id}))
         self.assertEqual(response.status_code, 200)  
+
+
+class PostUserListTest(BaseTest):
+
+    def test_user_list(self):
+        self.client.login(username=self.username, password=self.password)
+        self.client.post(self.post_create_url, self.post, format='text/html')
+        response = self.client.get(reverse('post-user-list'))
+        self.assertEqual(response.status_code, 200)  
+
+
+class PostUpdateTest(BaseTest):
+
+    def test_user_cant_update_someone_elses_post(self):
+        self.client.login(username=self.username, password=self.password)
+        self.client.post(self.post_create_url, self.post, format='text/html')
+        self.client.logout()
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first() 
+        self.client.login(username='testuser2', password='testpassword2')
+        response = self.client.post(reverse('post-update', kwargs={'post_id': obj.id}), self.post2, format='text\html')  
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first()
+        self.assertEqual(obj.title, 'Testtitle')
+        self.assertEqual(obj.status, 'DRAFT')
+    
+    def test_post_updates(self):
+        self.client.login(username=self.username, password=self.password)
+        self.client.post(self.post_create_url, self.post, format='text/html')
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first() 
+        response = self.client.post(reverse('post-update', kwargs={'post_id': obj.id}), self.post2, format='text\html')
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first()
+        self.assertEqual(obj.title, 'Testtitle2')
+        self.assertEqual(obj.status, 'PUBLISHED')
+
+    def test_post_update_cant_change_published_to_draft(self):
+        self.client.login(username=self.username, password=self.password)
+        self.client.post(self.post_create_url, self.post2, format='text/html')
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first()
+        response = self.client.post(reverse('post-update', kwargs={'post_id': obj.id}), self.post, format='text\html')
+        self.assertEqual(Post.objects.count(), 1)
+        obj = Post.objects.all().first()
+        self.assertEqual(obj.title, 'Testtitle')
+        self.assertEqual(obj.status, 'PUBLISHED')
