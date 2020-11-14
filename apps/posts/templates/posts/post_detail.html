@@ -5,10 +5,10 @@
 <p>By {{ object.author }}</p>
 <p>{{ object.body }}</p>
 <br/><br/>
-{% if object.comments.all %}
+{% if comments %}
     Comments:
     <br/><br/>
-    {% for comment in object.comments.all|slice:":10" %}
+    {% for comment in comments %}
         <strong>
             {{ comment.author }} -
             {{ comment.date_added }}
