@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from apps.users.models import User
+from apps.users.models import Profile
 
  
 class BaseTest(TestCase):
@@ -8,6 +9,8 @@ class BaseTest(TestCase):
         self.client = Client()
         self.register_url = reverse('register')
         self.login_url = reverse('login')
+        self.username = 'testusername'
+        self.password = 'testpassword'
         self.user = {
             'username': 'testusername', 
             'email': 'testemail@gmail.com', 
@@ -54,7 +57,7 @@ class RegisterTest(BaseTest):
         response = self.client.post(self.register_url, user_credentials, format='text/html')
         self.assertEqual(User.objects.count(), 0)
 
-    def test_register_no_usernme(self):
+    def test_register_no_username(self):
         user_credentials = {
             'username': '', 
             'email': 'test@gmail.com', 
@@ -182,3 +185,13 @@ class LoginTest(BaseTest):
         self.assertEqual(response.status_code, 200)
         session = self.client.session
         self.assertEqual((session.get('_auth_user_id')), None)
+
+class ProfileTest(BaseTest):
+
+    def test_registered_user_has_profile_created(self):
+        self.assertEqual(User.objects.count(), 0)
+        self.assertEqual(Profile.objects.count(), 0)
+        response = self.client.post(self.register_url, self.user, format='text/html')
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(User.is_active, True)
+        self.assertEqual(Profile.objects.count(), 1)
