@@ -11,11 +11,17 @@ class PostModelForm(ModelForm):
 
     tags = forms.CharField(max_length=255, required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(PostModelForm, self).__init__(*args, **kwargs)
+        if self.instance.status == Post.PUBLISHED:
+            self.fields.pop('status')
+
     class Meta:
         model = Post
         fields = [
             'title',
             'body',
+            'status',
             'tags',
         ]
 
