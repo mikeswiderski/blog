@@ -12,7 +12,7 @@ class Post(models.Model):
     ]
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    body = models.TextField() 
+    body = models.TextField()
     status = models.CharField(max_length=9, choices=STATUSES, default=DRAFT,)
 
     def __str__(self):
