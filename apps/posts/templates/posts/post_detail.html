@@ -5,5 +5,6 @@
 <p>By {{ object.author }}</p>
 
 <p>{{ object.body }}</p>
+Tags:&nbsp; {{ object.tags.all|join:", " }}.
 
 {% endblock content %}
