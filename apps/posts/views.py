@@ -35,6 +35,7 @@ def post_create_view(request):
             obj = form.save(commit=False)
             obj.author = request.user
             obj.save()
+            form.save_m2m()
             return redirect(reverse('post-detail', kwargs={'post_id': obj.id}))
     else:
         form = PostModelForm()
