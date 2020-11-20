@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from .forms import PostModelForm
 from .models import Post
@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 
 
 login = reverse_lazy('login')
+
 
 @login_required(login_url=login)
 def post_user_list_view(request):
@@ -26,7 +27,7 @@ def post_detail_view(request, post_id):
     return render(request, template_name, context)
 
 
-@login_required(login_url=login)         
+@login_required(login_url=login)
 def post_create_view(request):
     if request.method == 'POST':
         form = PostModelForm(request.POST)
@@ -36,12 +37,13 @@ def post_create_view(request):
             obj.save()
             form.save_m2m()
             return redirect(reverse('post-detail', kwargs={'post_id': obj.id}))
-    else:   
+    else:
         form = PostModelForm()
 
     template_name = 'posts/post_create.html'
     context = {'form': form}
-    return render(request, template_name, context) 
+    return render(request, template_name, context)
+
 
 @login_required(login_url=login)
 def post_update_view(request, post_id):

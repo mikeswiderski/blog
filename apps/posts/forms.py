@@ -7,6 +7,7 @@ import re
 
 pattern = re.compile(r'^[a-zA-Z0-9- ]*$')
 
+
 class PostModelForm(ModelForm):
 
     tags = forms.CharField(max_length=255, required=False)
@@ -35,12 +36,13 @@ class PostModelForm(ModelForm):
             if pattern.match(tag):
                 continue
             else:
-                raise forms.ValidationError('Letters, digits, space, dash only.')
-
-        
+                raise forms.ValidationError(
+                    'Letters, digits, space, dash only.'
+                )
+   
         for tag in tags:
             t, created = Tag.objects.get_or_create(label=tag)
             t.save()
             clean_tags.append(t)
-    
+
         return clean_tags
