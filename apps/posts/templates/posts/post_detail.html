@@ -5,6 +5,8 @@
 <p>By {{ object.author }}</p>
 <p>{{ object.body }}</p>
 <br/><br/>
+Tags:&nbsp; {{ object.tags.all|join:", " }}.
+<br/><br/>
 {% if comments %}
     Comments:
     <br/><br/>
@@ -20,5 +22,4 @@
     <br/><br/>
     <a href="{% url 'comment-all' object.id %}"> See all Comments </a>
 {% endif %}
-
 {% endblock content %}
