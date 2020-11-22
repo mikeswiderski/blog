@@ -28,7 +28,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['email']
 
     def clean_email(self, *args, **kwargs):
         instance = self.instance

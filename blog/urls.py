@@ -21,5 +21,12 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('profile/', user_views.profile, name='profile'),
     path('', include('apps.dashboard.urls')),
-    path('posts/', include('apps.posts.urls')),   
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('posts/', include('apps.posts.urls')),
+]
+
+
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT,
+    )
