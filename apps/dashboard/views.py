@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from apps.posts.models import Post
-from apps.comments.models import Comment
 from django.core.paginator import Paginator
 
 

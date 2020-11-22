@@ -5,7 +5,7 @@ from apps.users.models import User
 
 
 class Post(models.Model):
-    
+
     DRAFT = 'DRAFT'
     PUBLISHED = 'PUBLISHED'
     STATUSES = [
