@@ -19,4 +19,5 @@ urlpatterns = [
     path('register/', user_views.register, name='register'),
     path('', include('apps.dashboard.urls')),
     path('posts/', include('apps.posts.urls')),
+    path('comments/', include('apps.comments.urls')),
 ]

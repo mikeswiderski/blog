@@ -22,8 +22,12 @@ def post_user_list_view(request):
 
 def post_detail_view(request, post_id):
     obj = get_object_or_404(Post, id=post_id)
+    comments = obj.comments.all()[:10]
     template_name = 'posts/post_detail.html'
-    context = {"object": obj}
+    context = {
+        "object": obj,
+        "comments": comments
+    }
     return render(request, template_name, context)
 
 
