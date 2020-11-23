@@ -5,6 +5,22 @@
 <p>By: &nbsp;&nbsp; <img src="{{ object.author.profile.image.url }}" width=40 height=40> &nbsp;{{ object.author }}</p>
 
 <p>{{ object.body }}</p>
+<br/><br/>
 Tags:&nbsp; {{ object.tags.all|join:", " }}.
-
+<br/><br/>
+{% if comments %}
+    Comments:
+    <br/><br/>
+    {% for comment in comments %}
+        <strong>
+            {{ comment.author }} -
+            {{ comment.date_added }}
+        </strong>
+        <br/>
+        {{ comment.body }}
+        <br/>
+    {% endfor %}
+    <br/><br/>
+    <a href="{% url 'comment-all' object.id %}"> See all Comments </a>
+{% endif %}
 {% endblock content %}

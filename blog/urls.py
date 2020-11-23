@@ -22,6 +22,7 @@ urlpatterns = [
     path('profile/', user_views.profile, name='profile'),
     path('', include('apps.dashboard.urls')),
     path('posts/', include('apps.posts.urls')),
+    path('comments/', include('apps.comments.urls')),
 ]
 
 
