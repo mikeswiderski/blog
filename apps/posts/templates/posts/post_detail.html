@@ -2,7 +2,7 @@
 {% block content %}
 
 <h1>{{ object.title }}</h1>
-<p>By {{ object.author }}</p>
+<p>By: &nbsp;&nbsp; <img src="{{ object.author.profile.image.url }}" width=40 height=40> &nbsp;{{ object.author }}</p>
 
 <p>{{ object.body }}</p>
 Tags:&nbsp; {{ object.tags.all|join:", " }}.
