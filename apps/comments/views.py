@@ -12,7 +12,7 @@ login = reverse_lazy('login')
 
 @login_required(login_url=login)
 def comment_create_view(request, post_id):
-    post = get_object_or_404(Post, id=post_id, status='PUBLISHED')
+    post = get_object_or_404(Post, id=post_id, status=Post.PUBLISHED,)
     if request.method == 'POST':
         form = CommentModelForm(request.POST)
         if form.is_valid():
