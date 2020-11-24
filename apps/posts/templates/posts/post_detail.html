@@ -13,6 +13,7 @@ Tags:&nbsp; {{ object.tags.all|join:", " }}.
     <br/><br/>
     {% for comment in comments %}
         <strong>
+            <img src="{{ comment.author.profile.image.url }}" width=20 height=20>&nbsp;
             {{ comment.author }} -
             {{ comment.date_added }}
         </strong>

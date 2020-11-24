@@ -3,20 +3,23 @@ from django.shortcuts import render, redirect
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
-
+from apps.users.models import Profile
 
 log_in = reverse_lazy('login')
 
 
 def register(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        form = UserRegisterForm(request.POST, request.FILES)
         if form.is_valid():
             new_user = form.save()
             new_user = authenticate(
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password1'],
             )
+            profile = Profile.objects.get(user=new_user)
+            profile.image = form.cleaned_data['image']
+            profile.save()
             login(request, new_user)
             return redirect('dashboard-home')
     else:

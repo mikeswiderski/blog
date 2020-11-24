@@ -39,7 +39,7 @@ class PostModelForm(ModelForm):
                 raise forms.ValidationError(
                     'Letters, digits, space, dash only.'
                 )
-   
+
         for tag in tags:
             t, created = Tag.objects.get_or_create(label=tag)
             t.save()

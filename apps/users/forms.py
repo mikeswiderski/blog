@@ -7,10 +7,11 @@ from django.core.files.images import get_image_dimensions
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
+    image = forms.ImageField(required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'image', 'password1', 'password2']
 
     def clean_email(self, *args, **kwargs):
         email = self.cleaned_data.get('email')
@@ -21,6 +22,27 @@ class UserRegisterForm(UserCreationForm):
                 "Please use another email."
             )
         return email
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image')
+        if image:
+            if image.size > 800*1024:
+                raise forms.ValidationError("Image file too large! max 800kb")
+            w, h = get_image_dimensions(image)
+            if w <= 400:
+                raise forms.ValidationError(
+                   "The image is %i pixel wide. "
+                   "It's supposed to be at least 400 x 400 px" % w
+                )
+            if h <= 400:
+                raise forms.ValidationError(
+                   "The image is %i pixel high. "
+                   "It's supposed to be at least 400 x 400 px" % h
+                )
+            return image
+        else:
+            image = 'default.jpg'
+            return image
 
 
 class UserUpdateForm(forms.ModelForm):

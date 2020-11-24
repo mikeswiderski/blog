@@ -23,7 +23,7 @@ class BaseTest(TestCase):
 class RegisterTest(BaseTest):
 
     def test_can_register_user(self):
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             self.user,
             format='text/html',
@@ -38,7 +38,7 @@ class RegisterTest(BaseTest):
             'password1': 'testpassword1',
             'password2': 'testpassword',
         }
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             user_credentials,
             format='text/html',
@@ -55,7 +55,7 @@ class RegisterTest(BaseTest):
             'password1': '',
             'password2': '',
         }
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             user_credentials,
             format='text/html',
@@ -69,7 +69,7 @@ class RegisterTest(BaseTest):
             'password1': 'testpassword',
             'password2': 'testpassword',
         }
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             user_credentials,
             format='text/html',
@@ -83,7 +83,7 @@ class RegisterTest(BaseTest):
             'password1': 'testpassword',
             'password2': 'testpassword',
         }
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             user_credentials,
             format='text/html',
@@ -96,9 +96,9 @@ class RegisterTest(BaseTest):
             'email': 'test@gmail.com',
             'password': 'testpassword',
         }
-        user = User.objects.create_user(**user_credentials)
+        User.objects.create_user(**user_credentials)
         self.assertEqual(User.objects.count(), 1)
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             self.user,
             format='text/html',
@@ -114,9 +114,9 @@ class RegisterTest(BaseTest):
             'email': 'testemail@gmail.com',
             'password': 'testpassword',
         }
-        user = User.objects.create_user(**user_credentials)
+        User.objects.create_user(**user_credentials)
         self.assertEqual(User.objects.count(), 1)
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             self.user,
             format='text/html',
@@ -133,9 +133,9 @@ class RegisterTest(BaseTest):
             'email': 'differentemail@gmail.com',
             'password': 'testpassword',
         }
-        user = User.objects.create_user(**user_credentials)
+        User.objects.create_user(**user_credentials)
         self.assertEqual(User.objects.count(), 1)
-        response = self.client.post(
+        self.client.post(
             self.register_url,
             self.user,
             format='text/html',
@@ -262,12 +262,17 @@ class LoginTest(BaseTest):
         session = self.client.session
         self.assertEqual((session.get('_auth_user_id')), None)
 
+
 class ProfileTest(BaseTest):
 
     def test_registered_user_has_profile_created(self):
         self.assertEqual(User.objects.count(), 0)
         self.assertEqual(Profile.objects.count(), 0)
-        response = self.client.post(self.register_url, self.user, format='text/html')
+        self.client.post(
+            self.register_url,
+            self.user,
+            format='text/html'
+        )
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(User.is_active, True)
         self.assertEqual(Profile.objects.count(), 1)
