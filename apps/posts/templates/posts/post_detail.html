@@ -2,7 +2,8 @@
 {% block content %}
 
 <h1>{{ object.title }}</h1>
-<p>By {{ object.author }}</p>
+<p>By: &nbsp;&nbsp; <img src="{{ object.author.profile.image.url }}" width=40 height=40> &nbsp;{{ object.author }}</p>
+
 <p>{{ object.body }}</p>
 <br/><br/>
 Tags:&nbsp; {{ object.tags.all|join:", " }}.
@@ -12,6 +13,7 @@ Tags:&nbsp; {{ object.tags.all|join:", " }}.
     <br/><br/>
     {% for comment in comments %}
         <strong>
+            <img src="{{ comment.author.profile.image.url }}" width=20 height=20>&nbsp;
             {{ comment.author }} -
             {{ comment.date_added }}
         </strong>

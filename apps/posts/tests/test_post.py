@@ -34,13 +34,13 @@ class PostCreationTest(BaseTest):
     def test_can_create_post(self):
         self.assertEqual(Post.objects.count(), 0)
         self.client.login(username=self.username, password=self.password)
-        response = self.client.post(
+        self.client.post(
             self.post_create_url,
             self.post,
             format='text/html',
         )
         self.assertEqual(Post.objects.count(), 1)
-        
+
     def test_create_redirects_after_form_success(self):
         self.client.force_login
         response = self.client.post(
@@ -52,7 +52,7 @@ class PostCreationTest(BaseTest):
 
     def test_authorid_equals_userid(self):
         self.client.login(username=self.username, password=self.password)
-        response = self.client.post(
+        self.client.post(
             self.post_create_url,
             self.post,
             format='text/html',
@@ -62,7 +62,11 @@ class PostCreationTest(BaseTest):
 
     def test_can_create_tags(self):
         self.client.login(username=self.username, password=self.password)
-        response = self.client.post(self.post_create_url, self.post, format='text/html')
+        self.client.post(
+            self.post_create_url,
+            self.post,
+            format='text/html'
+        )
         obj = Post.objects.all().first()
         self.assertEqual(obj.tags.count(), 3)
 
@@ -71,13 +75,20 @@ class PostCreationTest(BaseTest):
         post_data = {
             'title': 'Testtitle',
             'body': 'TestBody',
-            'tags': 'test1,test2,test3%',    
+            'tags': 'test1,test2,test3%',
         }
-        response = self.client.post(self.post_create_url, post_data, format='text/html')
+        response = self.client.post(
+            self.post_create_url,
+            post_data,
+            format='text/html'
+        )
         self.assertEqual(Post.objects.count(), 0)
         self.assertEqual(Tag.objects.count(), 0)
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, "form", "tags", 'Letters, digits, space, dash only.')
+        self.assertFormError(
+            response, "form", "tags",
+            'Letters, digits, space, dash only.',
+        )
 
     def test_invalid_entry_create(self):
         self.client.login(
@@ -148,7 +159,7 @@ class PostUpdateTest(BaseTest):
         self.assertEqual(Post.objects.count(), 1)
         obj = Post.objects.all().first()
         self.client.login(username='testuser2', password='testpassword2')
-        response = self.client.post(
+        self.client.post(
             reverse('post-update', kwargs={'post_id': obj.id}),
             self.post2,
             format='text\html',
@@ -163,7 +174,7 @@ class PostUpdateTest(BaseTest):
         self.client.post(self.post_create_url, self.post, format='text/html')
         self.assertEqual(Post.objects.count(), 1)
         obj = Post.objects.all().first()
-        response = self.client.post(
+        self.client.post(
             reverse('post-update', kwargs={'post_id': obj.id}),
             self.post2,
             format='text\html',
@@ -178,7 +189,7 @@ class PostUpdateTest(BaseTest):
         self.client.post(self.post_create_url, self.post2, format='text/html')
         self.assertEqual(Post.objects.count(), 1)
         obj = Post.objects.all().first()
-        response = self.client.post(
+        self.client.post(
             reverse('post-update', kwargs={'post_id': obj.id}),
             self.post,
             format='text\html',
