@@ -1,9 +1,11 @@
-from django.forms import ModelForm
-from django import forms
-from .models import Post
-from apps.tags.models import Tag
 import re
 
+from django import forms
+from django.forms import ModelForm
+
+from apps.tags.models import Tag
+
+from .models import Post
 
 pattern = re.compile(r'^[a-zA-Z0-9- ]*$')
 
